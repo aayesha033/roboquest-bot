@@ -52,19 +52,6 @@ void loop() {
 
   if(RIGHT_SENSOR==1 && LEFT_SENSOR==1) {
     Stop();  //junction STOP
-    count = count + 1;
-    if(count == 1 || count == 5){
-      turnRightToLine();
-      delay(250);
-      return;
-    }
-    else if(count == 2){
-      turnLeftToLine();
-      return;
-    }
-    else{
-      backward(); delay(100); return;
-    }
 
  }
 
@@ -83,30 +70,6 @@ void loop() {
 }
 
 
-void turnRightToLine()
-{
-  right();
-  unsigned long t0 = millis();
-
-  while (millis() - t0 < MIN_TURN_MS) {}                              // 1. get turning
-  while (digitalRead(A1) == 0 && millis() - t0 < MAX_TURN_MS) {}      // 2. right sensor reaches the new line
-  while (!(digitalRead(A0) == 0 && digitalRead(A1) == 0) && millis() - t0 < MAX_TURN_MS) {
-    right();
-  }     // 3. line centred between the sensors
-  FullStop();
-}
-
-
-void turnLeftToLine()
-{
-  left();
-  unsigned long t0 = millis();
-
-  while (millis() - t0 < 150) {}
-  while (digitalRead(A0) == 0 && millis() - t0 < MAX_TURN_MS) {}      // left sensor reaches the new line
-  while (!(digitalRead(A0) == 0 && digitalRead(A1) == 0) && millis() - t0 < MAX_TURN_MS) {  }
-  FullStop();
-}
 
 
 void forward()
@@ -162,14 +125,6 @@ void Stop()
             delay(4000);
 }
 
-void FullStop()
-{
-            digitalWrite(in1, LOW);
-            digitalWrite(in2, LOW);
-            digitalWrite(in3, LOW);
-            digitalWrite(in4, LOW);
-            delay(4000);
-}
 
 // void left()    // turn left: right wheel drives, left wheel stops
 // {
