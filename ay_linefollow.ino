@@ -51,7 +51,7 @@ void loop() {
   int RIGHT_SENSOR = digitalRead(A1);
 
   if(RIGHT_SENSOR==1 && LEFT_SENSOR==1) {
-    Stop();  //STOP
+    Stop();  //junction STOP
     count = count + 1;
     if(count == 1 || count == 5){
       backward(); delay(ADVANCE_MS);
@@ -61,6 +61,9 @@ void loop() {
     else if(count == 2){
       turnLeftToLine();
       return;
+    }
+    else{
+      backward(); delay(100); return;
     }
 
  }
@@ -157,7 +160,6 @@ void Stop()
             digitalWrite(in3, LOW);
             digitalWrite(in4, LOW);
             delay(4000);
-            backward();
 }
 
 void FullStop()
