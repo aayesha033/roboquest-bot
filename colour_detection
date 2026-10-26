@@ -1,0 +1,42 @@
+#include<Wire.h>
+#include<Adafruit_TCS34725.h>
+
+Adafruit_TCS34725 tcs = Adafruit_TCS34725(TCS34725_INTEGRATIONTIME_50MS, TCS34725_GAIN_4X);
+
+void setup() {
+  // put your setup code here, to run once:
+  Serial.begin(9600);
+   if (!tcs.begin()) {
+    Serial.println("TCS34725 not found - check SDA/SCL and power");
+    while (1);
+  }
+
+}
+
+void loop() {
+  // put your main code here, to run repeatedly:
+  float red, green, blue;
+  tcs.getRGB(&red, &green, &blue);
+  int R = int(red);
+  int G = int(green);
+  int B = int(blue);
+  String colour = "";
+
+  if ((R-G > 130)&&(R-B > 145)){
+    colour = "RED";
+  }
+  if ((G-R > 11)&&(G-B > 40)){
+    colour = "GREEN";
+  }
+  if ((B-R > 10)&&(R-B > 145)){
+    colour = "BLUE";
+  }  
+  
+  Serial.print("Red: "); Serial.print(R);
+  Serial.print("    Green: "); Serial.print(G);
+  Serial.print("    Blue: "); Serial.print(B);
+  Serial.print("    Colour: "); Serial.print(colour);
+  Serial.println();
+  delay(1000);
+
+}
