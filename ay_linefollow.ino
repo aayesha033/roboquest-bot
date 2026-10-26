@@ -20,14 +20,14 @@ License: Remixing or Changing this Thing is allowed. Commercial use is not allow
 #define enB 5
 
 #define ADVANCE_MS  150  // TUNE creep forward at the junction so the wheels sit over it
-#define MIN_TURN_MS 300  // TUNE ignore the sensors briefly when a pivot starts
-#define MAX_TURN_MS 1500 // give up so the bot can never spin forever
+#define MIN_TURN_MS 100  // TUNE ignore the sensors briefly when a pivot starts
+#define MAX_TURN_MS 1000 // give up so the bot can never spin forever
 
 
- int M1_Speed = 115; // speed of motor 1
- int M2_Speed = 115; // speed of motor 2
- int LeftRotationSpeed = 115;  // Left Rotation Speed
- int RightRotationSpeed = 115; // Right Rotation Speed
+ int M1_Speed = 80; // speed of motor 1
+ int M2_Speed = 80; // speed of motor 2
+ int LeftRotationSpeed = 95;  // Left Rotation Speed
+ int RightRotationSpeed = 95; // Right Rotation Speed
 
 
  void setup() {
@@ -54,8 +54,8 @@ void loop() {
     Stop();  //junction STOP
     count = count + 1;
     if(count == 1 || count == 5){
-      backward(); delay(ADVANCE_MS);
       turnRightToLine();
+      delay(250);
       return;
     }
     else if(count == 2){
