@@ -11,6 +11,7 @@ License: Remixing or Changing this Thing is allowed. Commercial use is not allow
 */
 
   int count = 0;
+  int branch = 0;
 
 #define in1 2                                                                                                                          
 #define in2 4
@@ -20,14 +21,14 @@ License: Remixing or Changing this Thing is allowed. Commercial use is not allow
 #define enB 5
 
 #define ADVANCE_MS  150  // TUNE creep forward at the junction so the wheels sit over it
-#define MIN_TURN_MS 300  // TUNE ignore the sensors briefly when a pivot starts
-#define MAX_TURN_MS 1500 // give up so the bot can never spin forever
+#define MIN_TURN_MS 100  // TUNE ignore the sensors briefly when a pivot starts
+#define MAX_TURN_MS 1000 // give up so the bot can never spin forever
 
 
- int M1_Speed = 115; // speed of motor 1
- int M2_Speed = 115; // speed of motor 2
- int LeftRotationSpeed = 115;  // Left Rotation Speed
- int RightRotationSpeed = 115; // Right Rotation Speed
+ int M1_Speed = 80; // speed of motor 1
+ int M2_Speed = 80; // speed of motor 2
+ int LeftRotationSpeed = 95;  // Left Rotation Speed
+ int RightRotationSpeed = 95; // Right Rotation Speed
 
 
  void setup() {
@@ -42,6 +43,8 @@ License: Remixing or Changing this Thing is allowed. Commercial use is not allow
 
       pinMode(A0, INPUT); // initialize Left sensor as an input
       pinMode(A1, INPUT); // initialize Right sensor as an input
+      pinMode(A2, INPUT); // initialize left branch sensor as an input
+      pinMode(A3, INPUT); // initialize right branch sensor as an input
 
 }
 
@@ -49,18 +52,36 @@ void loop() {
 
   int LEFT_SENSOR = digitalRead(A0);
   int RIGHT_SENSOR = digitalRead(A1);
+  int J_LEFT_SENSOR = digitalRead(A2);
+  int J_RIGHT_SENSOR = digitalRead(A3);
 
   if(RIGHT_SENSOR==1 && LEFT_SENSOR==1) {
-    Stop();  //STOP
+    
+    Stop();  //junction STOP
     count = count + 1;
+   
     if(count == 1 || count == 5){
-      backward(); delay(ADVANCE_MS);
+
       turnRightToLine();
+      delay(1000);
+      M1_Speed = 60; // speed of motor 1
+      M2_Speed = 60; // speed of motor 2
+      LeftRotationSpeed = 90;  // Left Rotation Speed
+      RightRotationSpeed = 90; // Right Rotation Speed
+
+      if(J_LEFT_SENSOR == 1){
+        Stop();
+      }
       return;
     }
+
     else if(count == 2){
       turnLeftToLine();
       return;
+    }
+
+    else{
+      backward(); delay(100); return;
     }
 
  }
@@ -90,7 +111,7 @@ void turnRightToLine()
   while (!(digitalRead(A0) == 0 && digitalRead(A1) == 0) && millis() - t0 < MAX_TURN_MS) {
     right();
   }     // 3. line centred between the sensors
-  FullStop();
+  Stop();
 }
 
 
@@ -102,7 +123,7 @@ void turnLeftToLine()
   while (millis() - t0 < 150) {}
   while (digitalRead(A0) == 0 && millis() - t0 < MAX_TURN_MS) {}      // left sensor reaches the new line
   while (!(digitalRead(A0) == 0 && digitalRead(A1) == 0) && millis() - t0 < MAX_TURN_MS) {  }
-  FullStop();
+  Stop();
 }
 
 
@@ -157,17 +178,8 @@ void Stop()
             digitalWrite(in3, LOW);
             digitalWrite(in4, LOW);
             delay(4000);
-            backward();
 }
 
-void FullStop()
-{
-            digitalWrite(in1, LOW);
-            digitalWrite(in2, LOW);
-            digitalWrite(in3, LOW);
-            digitalWrite(in4, LOW);
-            delay(4000);
-}
 
 // void left()    // turn left: right wheel drives, left wheel stops
 // {
