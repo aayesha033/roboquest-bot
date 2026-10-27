@@ -29,7 +29,7 @@ int leftBranches  = 0;  // branches handled on the way back
 
 #define PUSH_MS      600   // TUNE how long to drive forward to push a ring in
 #define MIN_BACK_MS  200   // TUNE ignore sensors briefly when reversing
-#define MAX_BACK_MS  1500  // give up so it never reverses forever
+#define MAX_BACK_MS  2500  // give up so it never reverses forever
 
 
  int M1_Speed = 80; // speed of motor 1
@@ -66,6 +66,8 @@ void loop() {
   forward(); delay(ADVANCE_MS);   // creep so the wheels sit over the branch point
   turnLeftToLine();
   phase = 2;
+  forward(); delay(500);
+  left(); delay(300);
   return;
   }
 
@@ -160,7 +162,9 @@ void turnLeftToLine()
 
   while (millis() - t0 < 150) {}
   while (digitalRead(A0) == 0 && millis() - t0 < MAX_TURN_MS) {}      // left sensor reaches the new line
-  while (!(digitalRead(A0) == 0 && digitalRead(A1) == 0) && millis() - t0 < MAX_TURN_MS) {  }
+  while (!(digitalRead(A0) == 0 && digitalRead(A1) == 0) && millis() - t0 < 3000) {
+    left();
+    }
   Stop();
 }
 
@@ -240,7 +244,7 @@ void Stop()
             digitalWrite(in2, LOW);
             digitalWrite(in3, LOW);
             digitalWrite(in4, LOW);
-            delay(3200);
+            delay(700);
 }
 
 
